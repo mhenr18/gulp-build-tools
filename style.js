@@ -69,9 +69,10 @@ Style.sass = function(src_glob, dest_folder, options) {
     }
 
     function sassCompile() {
-        var sassOpts = Object.assign({}, 
-            options.sassOpts, 
-            options.compress ? {outputStyle: "compressed"} : {});
+        var sassOpts = options.sassOpts;
+        if (options.compress) {
+            sassOpts['outputStyle'] = 'compressed';
+        }
 
         gulp.src(options.entries)
             .pipe( options.sourcemaps ? sourcemaps.init() : gutil.noop() )
