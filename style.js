@@ -39,6 +39,7 @@ Style.sass = function(src_glob, dest_folder, options) {
     options.watch = options.watch || false;
     options.compress = options.compress || false;
     options.sourcemaps = options.sourcemaps || false;
+    options.sassOpts = options.sassOpts || {};
 
     if (options.autoprefix && !autoprefixer) {
         throw new Error("gulp-autoprefixer is not installed, disable options.autoprefix or install it.");
@@ -68,11 +69,14 @@ Style.sass = function(src_glob, dest_folder, options) {
     }
 
     function sassCompile() {
+        var sassOpts = Object.assign({}, 
+            options.sassOpts, 
+            options.compress ? {outputStyle: "compressed"} : {});
+
         gulp.src(options.entries)
             .pipe( options.sourcemaps ? sourcemaps.init() : gutil.noop() )
 
-                .pipe(sass(
-                    (options.compress ? {outputStyle: "compressed"} : {}))
+                .pipe(sass(sassOpts)
                     .on( "error", sassErrorHandler ).on( "complete", sassSuccessHandler ))
                 .pipe( options.autoprefix ? autoprefixer( options.autoprefix ) : gutil.noop() )
 
